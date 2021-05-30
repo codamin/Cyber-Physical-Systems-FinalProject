@@ -18,9 +18,12 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.crypto.SecretKey;
+
 public class MainActivity extends AppCompatActivity {
     private ProgressDialog progress;
     String address = null;
+    String myAddress = null;
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket myBtSocket = null;
     private Boolean isBtConnected = false;
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 //                    startActivity(intentGyroscope);
                     Log.d("Main", ">>>>>>>>>>>>>ONON");
                     msg("ON");
-                    turnOnLed();
+                    openLock();
                 }
                 if (v == btnOff) {
 //                    Intent intentGravity = new Intent(MainActivity.this,
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 //                    startActivity(intentGravity);
                     Log.d("Main", ">>>>>>>>>>>>>>>>OFFOFF");
                     msg("OFF");
-                    turnOffLed();
+                    closeLock();
                 }
             }
         };
@@ -88,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 if (myBtSocket == null || !isBtConnected)
                 {
                     myBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
+                    myAddress = myBluetooth.getAddress();
+                    Log.d("Main", ">>>>>>>>>>>my"+myAddress);
                     BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(address);//connects to the device's address and checks if it's available
                     myBtSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
@@ -125,30 +130,31 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),s, Toast.LENGTH_LONG).show();
     }
 
-    private void turnOffLed()
+    private void closeLock()
     {
         if (myBtSocket != null)
         {
             try
             {
+                String toSend = myAddress+Security.run("close"+myAddress);
+                myBtSocket.getOutputStream().write(toSend.getBytes());
                 Log.d("Main", "Trying sending On");
-                myBtSocket.getOutputStream().write("On".toString().getBytes());
             }
             catch (IOException e)
             {
-                Log.d("Main", "Trying Sending Off");
                 msg("Error");
             }
         }
     }
 
-    private void turnOnLed()
+    private void openLock()
     {
         if (myBtSocket!=null)
         {
             try
             {
-                myBtSocket.getOutputStream().write("Of".toString().getBytes());
+                String toSend = myAddress+Security.run("open"+myAddress);
+                myBtSocket.getOutputStream().write(toSend.getBytes());
             }
             catch (IOException e)
             {
