@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -33,26 +34,40 @@ public class MainActivity extends AppCompatActivity {
 
 //        Intent newint = getIntent();
 //        address = newint.getStringExtra(DeviceList.EXTRA_ADDRESS); //receive the address of the bluetooth device
+        Log.d("Main", "To Connect");
+        Connect myConnect = new Connect();
+        address = myConnect.pairedDevicesList();
+        Log.d("Main", ">>>>>>>"+address);
 
         Button btnOn = (Button) findViewById(R.id.button_on);
         Button btnOff = (Button) findViewById(R.id.button_off);
 
+        new ConnectBT().execute();
+
         View.OnClickListener handler = new View.OnClickListener() {
             public void onClick(View v) {
+                Log.d("Main", ">>>>>>>>>Handler Ran");
                 if (v == btnOn) {
 //                    Intent intentGyroscope = new Intent(MainActivity.this,
 //                            GyroscopeActivity.class);
 //                    startActivity(intentGyroscope);
-                    System.out.println("ONON");
+                    Log.d("Main", ">>>>>>>>>>>>>ONON");
+                    msg("ON");
+                    turnOnLed();
                 }
                 if (v == btnOff) {
 //                    Intent intentGravity = new Intent(MainActivity.this,
 //                            GravityActivity.class);
 //                    startActivity(intentGravity);
-                    System.out.println("OFFOFF");
+                    Log.d("Main", ">>>>>>>>>>>>>>>>OFFOFF");
+                    msg("OFF");
+                    turnOffLed();
                 }
             }
         };
+
+        btnOn.setOnClickListener(handler);
+        btnOff.setOnClickListener(handler);
     }
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
@@ -77,11 +92,13 @@ public class MainActivity extends AppCompatActivity {
                     myBtSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     myBtSocket.connect();//start connection
+                    Log.d("Main", ">>>>>>>>>>Device Connected");
                 }
             }
             catch (IOException e)
             {
                 ConnectSuccess = false;//if the try failed, you can check the exception here
+                Log.d("Main", ">>>>>>>>>>>>>Device couldn't Connect");
             }
             return null;
         }
@@ -114,10 +131,12 @@ public class MainActivity extends AppCompatActivity {
         {
             try
             {
+                Log.d("Main", "Trying sending On");
                 myBtSocket.getOutputStream().write("On".toString().getBytes());
             }
             catch (IOException e)
             {
+                Log.d("Main", "Trying Sending Off");
                 msg("Error");
             }
         }
