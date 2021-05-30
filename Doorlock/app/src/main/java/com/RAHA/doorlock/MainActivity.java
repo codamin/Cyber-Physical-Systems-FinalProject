@@ -1,4 +1,4 @@
-package com.RAHA.doorlock.Activities;
+package com.RAHA.doorlock;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import com.RAHA.doorlock.R;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -39,17 +37,19 @@ public class MainActivity extends AppCompatActivity {
         Button btnOn = (Button) findViewById(R.id.button_on);
         Button btnOff = (Button) findViewById(R.id.button_off);
 
-//        new ConnectBT().execute();
-
-
         View.OnClickListener handler = new View.OnClickListener() {
-
             public void onClick(View v) {
                 if (v == btnOn) {
-                    turnOnLed();
+//                    Intent intentGyroscope = new Intent(MainActivity.this,
+//                            GyroscopeActivity.class);
+//                    startActivity(intentGyroscope);
+                    System.out.println("ONON");
                 }
                 if (v == btnOff) {
-                    turnOffLed();
+//                    Intent intentGravity = new Intent(MainActivity.this,
+//                            GravityActivity.class);
+//                    startActivity(intentGravity);
+                    System.out.println("OFFOFF");
                 }
             }
         };
