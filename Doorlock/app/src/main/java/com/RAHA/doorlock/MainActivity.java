@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
@@ -51,17 +52,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d("Main", ">>>>>>>>>Handler Ran");
                 if (v == btnOn) {
-//                    Intent intentGyroscope = new Intent(MainActivity.this,
-//                            GyroscopeActivity.class);
-//                    startActivity(intentGyroscope);
                     Log.d("Main", ">>>>>>>>>>>>>ONON");
                     msg("ON");
                     openLock();
                 }
                 if (v == btnOff) {
-//                    Intent intentGravity = new Intent(MainActivity.this,
-//                            GravityActivity.class);
-//                    startActivity(intentGravity);
                     Log.d("Main", ">>>>>>>>>>>>>>>>OFFOFF");
                     msg("OFF");
                     closeLock();
@@ -92,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
                 {
                     myBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
                     myAddress = myBluetooth.getAddress();
+//                    String toSend = myAddress+"@"+Security.run("lock#"+myAddress);
+//                    Log.d("Main", ">>>>>>>>>"+toSend);
                     Log.d("Main", ">>>>>>>>>>>my"+myAddress);
                     BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(address);//connects to the device's address and checks if it's available
                     myBtSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
@@ -136,8 +133,12 @@ public class MainActivity extends AppCompatActivity {
         {
             try
             {
-                String toSend = myAddress+Security.run("close"+myAddress);
-                myBtSocket.getOutputStream().write(toSend.getBytes());
+                String toSend = myAddress+"#"+Security.run("lock#"+myAddress);
+                Log.d("Main", ">>>>>>>>>>>>>>>>>Lock__"+toSend);
+//                Log.d("Main", ">>>>>>>>>>>>>>>>>Lock_"+String.format("%x", new BigInteger(1, toSend.getBytes("UTF-8"))));
+                byte[] message = Security.mergeByteString(myAddress+"#", Security.run("lock#"+myAddress));
+//                myBtSocket.getOutputStream().write(toSend.getBytes());
+                myBtSocket.getOutputStream().write(message);
                 Log.d("Main", "Trying sending On");
             }
             catch (IOException e)
@@ -153,8 +154,16 @@ public class MainActivity extends AppCompatActivity {
         {
             try
             {
-                String toSend = myAddress+Security.run("open"+myAddress);
-                myBtSocket.getOutputStream().write(toSend.getBytes());
+                String toSend = myAddress+"#"+Security.run("open#"+myAddress);
+                Log.d("Main", ">>>>>>>>>>>>>>>>>Open__"+toSend);
+//                Log.d("Main", ">>>>>>>>>>>>>>>>>Open_"+String.format("%x", new BigInteger(1, toSend.getBytes("UTF-8"))));
+//                myBtSocket.getOutputStream().write(toSend.getBytes());
+                byte[] message = Security.mergeByteString(myAddress+"#", Security.run("open#"+myAddress));
+//                byte[] tmpf = Security.run("open#"+myAddress);
+//                for (byte b: tmpf){
+//                    Log.i("myactivity", String.format("0x%20x", b));
+//                }
+                myBtSocket.getOutputStream().write(message);
             }
             catch (IOException e)
             {

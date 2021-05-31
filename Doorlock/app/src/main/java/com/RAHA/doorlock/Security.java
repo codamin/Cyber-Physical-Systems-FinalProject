@@ -15,10 +15,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Security {
-    public static String run(String message) {
+    public static byte[] run(String message) {
         try {
             SecretKey secret = generateKey();
-            return new String(encryptMsg(message, secret));
+            return encryptMsg(message, secret);
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -67,5 +67,13 @@ public class Security {
         cipher.init(Cipher.DECRYPT_MODE, secret);
         String decryptString = new String(cipher.doFinal(cipherText), "UTF-8");
         return decryptString;
+    }
+
+    public static byte[] mergeByteString(String str, byte[] data) {
+        byte[] strd = str.getBytes();
+        byte[] ans = new byte[strd.length + data.length];
+        System.arraycopy(strd, 0, ans, 0, strd.length);
+        System.arraycopy(data, 0, ans, strd.length, data.length);
+        return ans;
     }
 }
