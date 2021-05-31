@@ -85,21 +85,31 @@ public class MainActivity extends AppCompatActivity {
             {
                 if (myBtSocket == null || !isBtConnected)
                 {
+                    Log.d("Main", ">>>>>>>>>>>>>>one");
                     myBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
+                    Log.d("Main", ">>>>>>>>>>>>>>two");
                     myAddress = myBluetooth.getAddress();
 //                    String toSend = myAddress+"@"+Security.run("lock#"+myAddress);
 //                    Log.d("Main", ">>>>>>>>>"+toSend);
+                    Log.d("Main", ">>>>>>>>>>>>>>three");
                     Log.d("Main", ">>>>>>>>>>>my"+myAddress);
                     BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(address);//connects to the device's address and checks if it's available
+                    Log.d("Main", ">>>>>>>>>>>>>>four");
                     myBtSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
+//                    myBtSocket = dispositivo.createRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
+
+                    Log.d("Main", ">>>>>>>>>>>>>>five");
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+                    Log.d("Main", ">>>>>>>>>>>>>>six");
                     myBtSocket.connect();//start connection
+                    Log.d("Main", ">>>>>>>>>>>>>>seven");
                     Log.d("Main", ">>>>>>>>>>Device Connected");
                 }
             }
             catch (IOException e)
             {
                 ConnectSuccess = false;//if the try failed, you can check the exception here
+                Log.e("Main", "I got an error", e);
                 Log.d("Main", ">>>>>>>>>>>>>Device couldn't Connect");
             }
             return null;
