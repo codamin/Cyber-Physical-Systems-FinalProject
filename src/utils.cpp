@@ -26,6 +26,9 @@ String* authorize(String id, String cypher_text_string) {
   aes128_dec_single((uint8_t *)password, cypher_text);
 
   String plain_text = String(cypher_text);
+
+  Serial.println("decript=");
+  Serial.println(plain_text);
   delete[] cypher_text;
 
   String* plain_text_splitted = new String[MAX_SPLIT_SIZE];
@@ -104,23 +107,24 @@ String* split(String str , char c) {
   return splitted;
 }
 
-String recv_cmd() {
+String recv_cmd(Servo motor) {
   String message;
-  // if(Serial.available()) {
-  // message = Serial.readStringUntil('\n');
-  // if(message.length() == 0) {
-  //   return "";
-  // }
-  // // }
-  // String* message_splitted = split(message, '#');
-  // String id = message_splitted[0];
-  // String cypher_text_string = message_splitted[1];
+  if(Serial.available()) {
+    message = Serial.readStringUntil('\n');
+    if(message.length() == 0) {
+      return "";
+    }
+    // }
+    String* message_splitted = split(message, '#');
+    String id = message_splitted[0];
+    String cypher_text_string = message_splitted[1];
 
-  // Serial.println("here 1");
+    Serial.println("here 1");
 
-  // String* plain_text_splitted = authorize(id, cypher_text_string);
-  
-  return "";
+    String* plain_text_splitted1 = authorize(id, cypher_text_string);
+    process_cmd(plain_text_splitted1, motor);  
+    return "";
+  }
 }
 
 void process_cmd(String* plain_text_splitted, Servo motor) {

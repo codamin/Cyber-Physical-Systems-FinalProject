@@ -34,7 +34,7 @@ void processCommand(String cmd);
 char* string2ptr(String str);
 BYTE* password2key(String password);
 String* split(String str , char c);
-String recv_cmd();
+String recv_cmd(Servo motor);
 void lock(Servo motor);
 void open(Servo motor);
 void process_cmd(String* plain_text_splitted, Servo motor);
